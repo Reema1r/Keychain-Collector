@@ -1,0 +1,16 @@
+{%extends "base.html" %} {% block content %}
+<h1>All Keychains</h1>
+<ul>
+  {% for keychain in keychains%}
+  <li>
+    <a href="{% url 'keychain_detail' keychain.pk%}"
+      ><h3>{{keychain.name}}</h3></a
+    >
+  </li>
+  {% empty%}
+  <h2>There are no keychains</h2>
+  {% endfor %}
+</ul>
+<br />
+<a href="{% url 'keychain_add'%}"><button>Add New Keychain</button></a>
+{%endblock%}

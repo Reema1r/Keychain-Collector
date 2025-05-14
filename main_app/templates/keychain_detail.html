@@ -1,0 +1,98 @@
+{%extends "base.html" %} {% block content %}
+<h1 style="text-align: center">🔑 Single Keychain Page</h1>
+
+<h2 style="margin-top: 70px">📝🔎Keychain Details</h2>
+<hr />
+<ul>
+  <li><strong>Name:</strong> {{ keychain.name }}</li>
+  <li><strong>Acquired In:</strong> {{ keychain.acquired_in }}</li>
+  <li><strong>Year Acquired</strong> {{ keychain.year_acquired }}</li>
+  <li><strong>Material:</strong> {{ keychain.material }}</li>
+  <li><strong>Theme:</strong> {{ keychain.theme }}</li>
+  <li><strong>Story:</strong> {{ keychain.story }}</li>
+  <li>
+    <strong>Is It a Gift:</strong> {% if keychain.is_gift %}Yes{% else %} No
+    {%endif %}
+  </li>
+</ul>
+
+<!-- Keychain Images -->
+<h2 style="margin-top: 70px">🖼️Keychain Images</h2>
+<hr />
+<table class="striped">
+  <thead>
+    <tr>
+      <th>Image</th>
+      <th>Caption</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    {% for image in keychain.keychainimage_set.all %}
+    <tr>
+      <td>
+        <img
+          src="{{ image.image.url }}"
+          alt="{{ image.caption }}"
+          style="max-width: 200px"
+        />
+      </td>
+      <td>{{ image.caption }}</td>
+    </tr>
+
+    {% endfor %}
+  </tbody>
+</table>
+
+<!-- To Add Images  -->
+<!-- I used this resource from stackoverflow: https://stackoverflow.com/questions/68725696/django-upload-image-from-form -->
+<h3>➕ Add Images</h3>
+<form
+  action="{%url 'add-image' keychain.id%}"
+  method="post"
+  enctype="multipart/form-data"
+>
+  {% csrf_token %} {{keychain_form.as_p}}
+  <input type="submit" value="Add Image" />
+</form>
+
+<!-- Keychain Tags -->
+<h2 style="margin-top: 60px">🏷️Tags</h2>
+<hr />
+<h4>Current Tags</h4>
+
+<!-- Removing Tags -->
+{%if keychain.tags.count %} {% for tag in keychain.tags.all %}
+<p>#{{tag.tag_name}}</p>
+
+<form
+  method="post"
+  action="{% url 'remove_tag_from_keychain' keychain.id tag.id %}"
+>
+  {% csrf_token %}
+  <button type="submit">Remove Tag</button>
+</form>
+{% endfor %} {% else %}
+<h4>No tags! 😢</h4>
+{%endif%}
+
+<!-- Adding tags -->
+{% if tags_keychain_does_not_have.count %}
+
+<h4>Available Tags</h4>
+{% for tag in tags_keychain_does_not_have %}
+<p>#{{tag.tag_name}}</p>
+<form method="post" action="{% url 'add_tag_to_keychain' keychain.id tag.id %}">
+  {% csrf_token %}
+  <button type="submit">Add Tag</button>
+</form>
+
+{% endfor %} {% else %}
+<h4>No Available Tags! 😢</h4>
+{%endif%}
+
+<br />
+<a href="{% url 'keychain_update' keychain.pk%}"><button>Edit</button></a>
+<a href="{% url 'keychain_delete' keychain.pk%}"><button>Delete</button></a>
+<a href="{% url 'keychain_list'%}"><button>Back</button></a>
+{%endblock%}

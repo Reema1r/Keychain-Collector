@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+
+  <body>
+    <nav>
+      {% if user.is_authenticated%}
+      <a href="{% url 'keychain_list' %}">All Keychain |</a>
+      <a href="{% url 'keychain_add' %}">Add New Keychain |</a>
+      <a href="{% url 'logout' %}">Logout</a>
+
+      {%else%}
+      <a href="{% url 'login' %}">Login |</a>
+      <a href="{% url 'signup' %}">Sign Up</a>
+      {%endif%}
+    </nav>
+    <main>
+      {% block content %}
+      <!-- this is where the individual pages will be  -->
+
+      {%endblock%}
+    </main>
+  </body>
+</html>
